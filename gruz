@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Грузовозофф - Портал грузоперевозок</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            color: var(--secondary);
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: var(--secondary);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--light);
+            color: var(--light);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+        
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .page {
+            display: none;
+            min-height: calc(100vh - 160px);
+            padding: 40px 0;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .error-message {
+            color: var(--accent);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .trucks-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%232c3e50"/><path d="M20,40 L30,20 L70,20 L80,40 L80,80 L60,80 L60,60 L40,60 L40,80 L20,80 Z" fill="%233498db"/><circle cx="30" cy="80" r="10" fill="%232c3e50"/><circle cx="70" cy="80" r="10" fill="%232c3e50"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            margin-bottom: 40px;
+        }
+        
+        .hero-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .hero-subtitle {
+            font-size: 22px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn-large {
+            padding: 14px 30px;
+            font-size: 18px;
+        }
+        
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .application-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .application-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 15px 20px;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-label {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .card-value {
+            text-align: right;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning);
+        }
+        
+        .status-approved {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success);
+        }
+        
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--accent);
+        }
+        
+        .admin-panel {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .admin-table th, .admin-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .admin-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .admin-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .admin-table tr:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        footer {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-size: 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon">🚚</div>
+                <h1>Грузовоз<span>офф</span></h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+                    <li><a href="#" class="nav-link" data-page="applications">Мои заявки</a></li>
+                    <li><a href="#" class="nav-link" data-page="new-application">Новая заявка</a></li>
+                    <li><a href="#" class="nav-link admin-link" data-page="admin">Админ-панель</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                <button id="login-btn" class="btn btn-outline">Войти</button>
+                <button id="register-btn" class="btn btn-primary">Регистрация</button>
+                <button id="logout-btn" class="btn btn-outline" style="display: none;">Выйти</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="trucks-bg">
+        <div class="container">
+            <h2 class="hero-title">Надёжные грузоперевозки по всей России</h2>
+            <p class="hero-subtitle">Быстро, безопасно и по доступным ценам. Оформите заявку на перевозку груза прямо сейчас!</p>
+            <button id="hero-application-btn" class="btn btn-primary btn-large">Оформить заявку</button>
+        </div>
+    </div>
+    
+    <main class="container">
+        <!-- Главная страница -->
+        <section id="home-page" class="page active">
+            <h2 class="page-title">Добро пожаловать на портал Грузовозофф!</h2>
+            <div class="form-container">
+                <p>Наш портал предоставляет удобный сервис для заказа грузоперевозок автомобильным транспортом.</p>
+                <br>
+                <p><strong>Как это работает:</strong></p>
+                <ol style="padding-left: 20px; margin-top: 10px;">
+                    <li>Зарегистрируйтесь в системе</li>
+                    <li>Создайте заявку на перевозку груза</li>
+                    <li>Администратор проверит и подтвердит вашу заявку</li>
+                    <li>Наслаждайтесь быстрой и надежной доставкой!</li>
+                </ol>
+                <br>
+                <div class="form-row">
+                    <button id="home-register-btn" class="btn btn-primary">Зарегистрироваться</button>
+                    <button id="home-login-btn" class="btn btn-outline">Войти в систему</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Страница регистрации -->
+        <section id="register-page" class="page">
+            <h2 class="page-title">Регистрация в системе</h2>
+            <div class="form-container">
+                <form id="register-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullname">ФИО</label>
+                            <input type="text" id="fullname" class="form-control" placeholder="Иванов Иван Иванович">
+                            <div class="error-message" id="fullname-error">ФИО должно содержать только кириллицу и пробелы</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Телефон</label>
+                            <input type="tel" id="phone" class="form-control" placeholder="+7(999)-999-99-99">
+                            <div class="error-message" id="phone-error">Введите телефон в формате +7(XXX)-XXX-XX-XX</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="example@mail.ru">
+                            <div class="error-message" id="email-error">Введите корректный email</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="login">Логин</label>
+                            <input type="text" id="login" class="form-control" placeholder="Не менее 6 символов">
+                            <div class="error-message" id="login-error">Логин должен содержать только кириллицу и быть не менее 6 символов</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Пароль</label>
+                            <input type="password" id="password" class="form-control" placeholder="Не менее 6 символов">
+                            <div class="error-message" id="password-error">Пароль должен быть не менее 6 символов</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password">Подтвердите пароль</label>
+                            <input type="password" id="confirm-password" class="form-control">
+                            <div class="error-message" id="confirm-password-error">Пароли не совпадают</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Страница входа -->
+        <section id="login-page" class="page">
+            <h2 class="page-title">Вход в систему</h2>
+            <div class="form-container">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Логин</label>
+                        <input type="text" id="login-username" class="form-control" placeholder="Введите ваш логин">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Пароль</label>
+                        <input type="password" id="login-password" class="form-control" placeholder="Введите ваш пароль">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Страница заявок пользователя -->
+        <section id="applications-page" class="page">
+            <h2 class="page-title">Мои заявки на перевозку</h2>
+            
+            <div class="applications-grid" id="applications-container">
+                <!-- Заявки будут загружены через JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Страница создания заявки -->
+        <section id="new-application-page" class="page">
+            <h2 class="page-title">Новая заявка на перевозку</h2>
+            <div class="form-container">
+                <form id="application-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cargo-date">Дата перевозки</label>
+                            <input type="date" id="cargo-date" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cargo-time">Время перевозки</label>
+                            <input type="time" id="cargo-time" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cargo-weight">Вес груза (кг)</label>
+                            <input type="number" id="cargo-weight" class="form-control" placeholder="Пример: 500">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cargo-type">Тип груза</label>
+                            <select id="cargo-type" class="form-control">
+                                <option value="Бытовая техника">Бытовая техника</option>
+                                <option value="Мебель">Мебель</option>
+                                <option value="Строительные материалы">Строительные материалы</option>
+                                <option value="Продукты питания">Продукты питания</option>
+                                <option value="Промышленные товары">Промышленные товары</option>
+                                <option value="Другое">Другое</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cargo-dimensions">Габариты груза (Д×Ш×В, м)</label>
+                        <input type="text" id="cargo-dimensions" class="form-control" placeholder="Пример: 2.5×1.8×1.2">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="from-address">Адрес отправления</label>
+                        <input type="text" id="from-address" class="form-control" placeholder="Полный адрес">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="to-address">Адрес доставки</label>
+                        <input type="text" id="to-address" class="form-control" placeholder="Полный адрес">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Админ-панель -->
+        <section id="admin-page" class="page">
+            <h2 class="page-title">Панель администратора</h2>
+            
+            <div class="admin-panel">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Пользователь</th>
+                            <th>Дата/Время</th>
+                            <th>Тип груза</th>
+                            <th>Вес (кг)</th>
+                            <th>Откуда</th>
+                            <th>Куда</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-applications">
+                        <!-- Заявки для администратора будут загружены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Грузовозофф - надежный партнер в сфере грузоперевозок. Мы обеспечиваем быструю и безопасную доставку ваших грузов по всей России.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+                        <li><a href="#" class="nav-link" data-page="applications">Мои заявки</a></li>
+                        <li><a href="#" class="nav-link" data-page="new-application">Новая заявка</a></li>
+                        <li><a href="#" class="nav-link admin-link" data-page="admin">Админ-панель</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>Телефон: +7 (800) 555-35-35</li>
+                        <li>Email: info@gruzovozoff.ru</li>
+                        <li>Адрес: г. Москва, ул. Транспортная, д. 15</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 Грузовозофф. Все права защищены.
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Эмуляция базы данных с использованием localStorage
+        class Database {
+            constructor() {
+                this.usersKey = 'gruzovozoff_users';
+                this.applicationsKey = 'gruzovozoff_applications';
+                this.currentUserKey = 'gruzovozoff_current_user';
+                this.adminUser = {
+                    id: 0,
+                    login: 'admin',
+                    password: 'gruzovik2024',
+                    fullName: 'Администратор Системы',
+                    phone: '+7(999)-999-99-99',
+                    email: 'admin@gruzovozoff.ru',
+                    isAdmin: true
+                };
+                
+                this.initialize();
+            }
+            
+            initialize() {
+                if (!localStorage.getItem(this.usersKey)) {
+                    const users = [this.adminUser];
+                    localStorage.setItem(this.usersKey, JSON.stringify(users));
+                }
+                
+                if (!localStorage.getItem(this.applicationsKey)) {
+                    localStorage.setItem(this.applicationsKey, JSON.stringify([]));
+                }
+            }
+            
+            // SQL: INSERT INTO users (login, password, fullName, phone, email) VALUES (?, ?, ?, ?, ?)
+            registerUser(user) {
+                const users = this.getUsers();
+                
+                // Проверка уникальности логина
+                if (users.some(u => u.login === user.login)) {
+                    throw new Error('Пользователь с таким логином уже существует');
+                }
+                
+                user.id = this.getNextId(users);
+                users.push(user);
+                localStorage.setItem(this.usersKey, JSON.stringify(users));
+                return user;
+            }
+            
+            // SQL: SELECT * FROM users WHERE login = ? AND password = ?
+            loginUser(login, password) {
+                const users = this.getUsers();
+                const user = users.find(u => u.login === login && u.password === password);
+                
+                if (!user) {
+                    throw new Error('Неверный логин или пароль');
+                }
+                
+                localStorage.setItem(this.currentUserKey, JSON.stringify(user));
+                return user;
+            }
+            
+            logoutUser() {
+                localStorage.removeItem(this.currentUserKey);
+            }
+            
+            getCurrentUser() {
+                const user = localStorage.getItem(this.currentUserKey);
+                return user ? JSON.parse(user) : null;
+            }
+            
+            // SQL: INSERT INTO applications (userId, date, time, weight, dimensions, cargoType, fromAddress, toAddress, status) 
+            // VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+            createApplication(application) {
+                const applications = this.getApplications();
+                application.id = this.getNextId(applications);
+                application.status = 'pending';
+                application.createdAt = new Date().toISOString();
+                
+                applications.push(application);
+                localStorage.setItem(this.applicationsKey, JSON.stringify(applications));
+                return application;
+            }
+            
+            // SQL: SELECT * FROM applications WHERE userId = ?
+            getUserApplications(userId) {
+                const applications = this.getApplications();
+                return applications.filter(app => app.userId === userId);
+            }
+            
+            // SQL: SELECT * FROM applications
+            getAllApplications() {
+                return this.getApplications();
+            }
+            
+            // SQL: DELETE FROM applications WHERE id = ?
+            deleteApplication(id) {
+                let applications = this.getApplications();
+                applications = applications.filter(app => app.id !== id);
+                localStorage.setItem(this.applicationsKey, JSON.stringify(applications));
+            }
+            
+            getUsers() {
+                return JSON.parse(localStorage.getItem(this.usersKey)) || [];
+            }
+            
+            getApplications() {
+                return JSON.parse(localStorage.getItem(this.applicationsKey)) || [];
+            }
+            
+            getNextId(items) {
+                return items.length > 0 ? Math.max(...items.map(i => i.id)) + 1 : 1;
+            }
+        }
+
+        // Основной класс приложения
+        class GruzovozoffApp {
+            constructor() {
+                this.db = new Database();
+                this.currentUser = null;
+                this.init();
+            }
+            
+            init() {
+                this.checkAuth();
+                this.setupEventListeners();
+                this.showPage('home');
+            }
+            
+            checkAuth() {
+                this.currentUser = this.db.getCurrentUser();
+                this.updateUI();
+            }
+            
+            updateUI() {
+                const isAuthenticated = !!this.currentUser;
+                const isAdmin = isAuthenticated && this.currentUser.isAdmin;
+                
+                // Обновление видимости кнопок
+                document.getElementById('login-btn').style.display = isAuthenticated ? 'none' : 'block';
+                document.getElementById('register-btn').style.display = isAuthenticated ? 'none' : 'block';
+                document.getElementById('logout-btn').style.display = isAuthenticated ? 'block' : 'none';
+                
+                // Обновление видимости элементов навигации
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    const page = link.getAttribute('data-page');
+                    if (page === 'admin') {
+                        link.style.display = isAdmin ? 'block' : 'none';
+                    } else if (page !== 'home') {
+                        link.style.display = isAuthenticated ? 'block' : 'none';
+                    }
+                });
+                
+                // Обновление имени пользователя
+                if (isAuthenticated) {
+                    document.querySelector('.logo h1').innerHTML = `Грузовоз<span>офф</span> <small>(${this.currentUser.login})</small>`;
+                } else {
+                    document.querySelector('.logo h1').innerHTML = `Грузовоз<span>офф</span>`;
+                }
+            }
+            
+            setupEventListeners() {
+                // Навигация
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = link.getAttribute('data-page');
+                        this.showPage(page);
+                    });
+                });
+                
+                // Кнопки авторизации
+                document.getElementById('login-btn').addEventListener('click', () => this.showPage('login'));
+                document.getElementById('register-btn').addEventListener('click', () => this.showPage('register'));
+                document.getElementById('logout-btn').addEventListener('click', () => this.logout());
+                document.getElementById('home-login-btn').addEventListener('click', () => this.showPage('login'));
+                document.getElementById('home-register-btn').addEventListener('click', () => this.showPage('register'));
+                document.getElementById('hero-application-btn').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showPage('new-application');
+                    } else {
+                        this.showPage('register');
+                    }
+                });
+                
+                // Форма регистрации
+                document.getElementById('register-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.register();
+                });
+                
+                // Форма входа
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.login();
+                });
+                
+                // Форма создания заявки
+                document.getElementById('application-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createApplication();
+                });
+            }
+            
+            showPage(pageName) {
+                // Скрыть все страницы
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Показать запрошенную страницу
+                document.getElementById(`${pageName}-page`).classList.add('active');
+                
+                // Обновить активную ссылку в навигации
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                document.querySelector(`.nav-link[data-page="${pageName}"]`)?.classList.add('active');
+                
+                // Загрузить данные для некоторых страниц
+                if (pageName === 'applications' && this.currentUser) {
+                    this.loadUserApplications();
+                }
+                
+                if (pageName === 'admin' && this.currentUser?.isAdmin) {
+                    this.loadAdminApplications();
+                }
+            }
+            
+            validateForm() {
+                let isValid = true;
+                
+                // ФИО: кириллица и пробелы
+                const fullname = document.getElementById('fullname').value;
+                const fullnameRegex = /^[А-Яа-яЁё\s]+$/;
+                if (!fullnameRegex.test(fullname)) {
+                    document.getElementById('fullname-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('fullname-error').style.display = 'none';
+                }
+                
+                // Телефон: +7(XXX)-XXX-XX-XX
+                const phone = document.getElementById('phone').value;
+                const phoneRegex = /^\+7\(\d{3}\)-\d{3}-\d{2}-\d{2}$/;
+                if (!phoneRegex.test(phone)) {
+                    document.getElementById('phone-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('phone-error').style.display = 'none';
+                }
+                
+                // Email: стандартный формат
+                const email = document.getElementById('email').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    document.getElementById('email-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('email-error').style.display = 'none';
+                }
+                
+                // Логин: кириллица, минимум 6 символов
+                const login = document.getElementById('login').value;
+                const loginRegex = /^[А-Яа-яЁё]{6,}$/;
+                if (!loginRegex.test(login)) {
+                    document.getElementById('login-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('login-error').style.display = 'none';
+                }
+                
+                // Пароль: минимум 6 символов
+                const password = document.getElementById('password').value;
+                if (password.length < 6) {
+                    document.getElementById('password-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('password-error').style.display = 'none';
+                }
+                
+                // Подтверждение пароля
+                const confirmPassword = document.getElementById('confirm-password').value;
+                if (password !== confirmPassword) {
+                    document.getElementById('confirm-password-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('confirm-password-error').style.display = 'none';
+                }
+                
+                return isValid;
+            }
+            
+            register() {
+                if (!this.validateForm()) return;
+                
+                const user = {
+                    login: document.getElementById('login').value,
+                    password: document.getElementById('password').value,
+                    fullName: document.getElementById('fullname').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    isAdmin: false
+                };
+                
+                try {
+                    const newUser = this.db.registerUser(user);
+                    this.db.loginUser(newUser.login, newUser.password);
+                    this.currentUser = newUser;
+                    this.updateUI();
+                    this.showPage('new-application');
+                    alert('Регистрация прошла успешно! Теперь вы можете создать заявку на перевозку.');
+                } catch (error) {
+                    alert(`Ошибка регистрации: ${error.message}`);
+                }
+            }
+            
+            login() {
+                const login = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+                
+                try {
+                    const user = this.db.loginUser(login, password);
+                    this.currentUser = user;
+                    this.updateUI();
+                    this.showPage('applications');
+                } catch (error) {
+                    alert(`Ошибка входа: ${error.message}`);
+                }
+            }
+            
+            logout() {
+                this.db.logoutUser();
+                this.currentUser = null;
+                this.updateUI();
+                this.showPage('home');
+            }
+            
+            createApplication() {
+                if (!this.currentUser) {
+                    alert('Для создания заявки необходимо войти в систему');
+                    this.showPage('login');
+                    return;
+                }
+                
+                const application = {
+                    userId: this.currentUser.id,
+                    date: document.getElementById('cargo-date').value,
+                    time: document.getElementById('cargo-time').value,
+                    weight: document.getElementById('cargo-weight').value,
+                    dimensions: document.getElementById('cargo-dimensions').value,
+                    cargoType: document.getElementById('cargo-type').value,
+                    fromAddress: document.getElementById('from-address').value,
+                    toAddress: document.getElementById('to-address').value
+                };
+                
+                try {
+                    this.db.createApplication(application);
+                    document.getElementById('application-form').reset();
+                    this.showPage('applications');
+                    alert('Заявка успешно создана и отправлена на рассмотрение администратору!');
+                } catch (error) {
+                    alert(`Ошибка создания заявки: ${error.message}`);
+                }
+            }
+            
+            loadUserApplications() {
+                const container = document.getElementById('applications-container');
+                container.innerHTML = '';
+                
+                if (!this.currentUser) return;
+                
+                const applications = this.db.getUserApplications(this.currentUser.id);
+                
+                if (applications.length === 0) {
+                    container.innerHTML = '<div class="form-container"><p>У вас пока нет заявок на перевозку.</p></div>';
+                    return;
+                }
+                
+                applications.forEach(app => {
+                    const date = new Date(app.createdAt);
+                    const formattedDate = date.toLocaleDateString('ru-RU');
+                    const formattedTime = date.toLocaleTimeString('ru-RU');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'application-card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h3>Заявка #${app.id}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-row">
+                                <span class="card-label">Дата создания:</span>
+                                <span class="card-value">${formattedDate} ${formattedTime}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Статус:</span>
+                                <span class="card-value">
+                                    <span class="status status-${app.status}">${
+                                        app.status === 'pending' ? 'На рассмотрении' : 
+                                        app.status === 'approved' ? 'Подтверждена' : 'Отклонена'
+                                    }</span>
+                                </span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Дата перевозки:</span>
+                                <span class="card-value">${app.date} ${app.time}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Тип груза:</span>
+                                <span class="card-value">${app.cargoType}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Вес:</span>
+                                <span class="card-value">${app.weight} кг</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Габариты:</span>
+                                <span class="card-value">${app.dimensions} м</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Откуда:</span>
+                                <span class="card-value">${app.fromAddress}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Куда:</span>
+                                <span class="card-value">${app.toAddress}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+            
+            loadAdminApplications() {
+                const container = document.getElementById('admin-applications');
+                container.innerHTML = '';
+                
+                const applications = this.db.getAllApplications();
+                const users = this.db.getUsers();
+                
+                if (applications.length === 0) {
+                    container.innerHTML = '<tr><td colspan="9" style="text-align: center;">Нет заявок на рассмотрении</td></tr>';
+                    return;
+                }
+                
+                applications.forEach(app => {
+                    const user = users.find(u => u.id === app.userId) || {};
+                    const date = new Date(app.createdAt);
+                    const formattedDate = date.toLocaleDateString('ru-RU');
+                    const formattedTime = date.toLocaleTimeString('ru-RU');
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${app.id}</td>
+                        <td>${user.fullName || 'Неизвестный пользователь'}</td>
+                        <td>${app.date} ${app.time}</td>
+                        <td>${app.cargoType}</td>
+                        <td>${app.weight}</td>
+                        <td>${app.fromAddress}</td>
+                        <td>${app.toAddress}</td>
+                        <td><span class="status status-${app.status}">${
+                            app.status === 'pending' ? 'На рассмотрении' : 
+                            app.status === 'approved' ? 'Подтверждена' : 'Отклонена'
+                        }</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-danger btn-sm delete-app" data-id="${app.id}">Удалить</button>
+                        </td>
+                    `;
+                    
+                    container.appendChild(row);
+                });
+                
+                // Обработчики для кнопок удаления
+                document.querySelectorAll('.delete-app').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        if (confirm('Вы уверены, что хотите удалить эту заявку?')) {
+                            this.db.deleteApplication(id);
+                            this.loadAdminApplications();
+                        }
+                    });
+                });
+            }
+        }
+
+        // Инициализация приложения после загрузки страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new GruzovozoffApp();
+        });
+    </script>
+</body>
+</html>
