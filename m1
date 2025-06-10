@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Я буду кушац - Бронирование столиков</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --secondary: #D2B48C;
+            --accent: #A52A2A;
+            --light: #FFF8DC;
+            --dark: #4B3621;
+            --success: #228B22;
+            --warning: #FFD700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23FFF8DC"/><path d="M20,20 Q40,5 60,20 T100,20 L80,40 Q60,55 40,40 T0,40 Z" fill="%23D2B48C" opacity="0.2"/></svg>');
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            color: var(--secondary);
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .btn-primary:hover {
+            background-color: #c19a6b;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--light);
+            color: var(--light);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+        
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .page {
+            display: none;
+            min-height: calc(100vh - 160px);
+            padding: 40px 0;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(210, 180, 140, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .error-message {
+            color: var(--accent);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .restaurant-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%234B3621"/><circle cx="25" cy="25" r="15" fill="%23D2B48C"/><circle cx="75" cy="25" r="15" fill="%23D2B48C"/><circle cx="25" cy="75" r="15" fill="%23D2B48C"/><circle cx="75" cy="75" r="15" fill="%23D2B48C"/><rect x="40" y="40" width="20" height="20" fill="%238B4513"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            margin-bottom: 40px;
+        }
+        
+        .hero-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .hero-subtitle {
+            font-size: 22px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn-large {
+            padding: 14px 30px;
+            font-size: 18px;
+        }
+        
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .booking-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-label {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .card-value {
+            text-align: right;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-new {
+            background-color: rgba(139, 69, 19, 0.2);
+            color: var(--primary);
+        }
+        
+        .status-completed {
+            background-color: rgba(34, 139, 34, 0.2);
+            color: var(--success);
+        }
+        
+        .status-cancelled {
+            background-color: rgba(165, 42, 42, 0.2);
+            color: var(--accent);
+        }
+        
+        .admin-panel {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .admin-table th, .admin-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .admin-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .admin-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .admin-table tr:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .review-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .rating {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .star {
+            color: #ddd;
+            cursor: pointer;
+            font-size: 24px;
+            transition: color 0.2s;
+        }
+        
+        .star.active {
+            color: var(--warning);
+        }
+        
+        footer {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-size: 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+                <h1><span>Я буду</span> кушац</h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+                    <li><a href="#" class="nav-link" data-page="bookings">Мои бронирования</a></li>
+                    <li><a href="#" class="nav-link" data-page="new-booking">Забронировать столик</a></li>
+                    <li><a href="#" class="nav-link admin-link" data-page="admin">Админ-панель</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                <button id="login-btn" class="btn btn-outline">Войти</button>
+                <button id="register-btn" class="btn btn-primary">Регистрация</button>
+                <button id="logout-btn" class="btn btn-outline" style="display: none;">Выйти</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="restaurant-bg">
+        <div class="container">
+            <h2 class="hero-title">Наслаждайтесь изысканной кухней в уютной атмосфере</h2>
+            <p class="hero-subtitle">Забронируйте столик в нашем ресторане и получите незабываемые гастрономические впечатления</p>
+            <button id="hero-booking-btn" class="btn btn-primary btn-large">Забронировать столик</button>
+        </div>
+    </div>
+    
+    <main class="container">
+        <!-- Главная страница -->
+        <section id="home-page" class="page active">
+            <h2 class="page-title">Добро пожаловать в ресторан "Я буду кушац"!</h2>
+            <div class="form-container">
+                <p>Наш ресторан предлагает изысканные блюда европейской и авторской кухни в уютной атмосфере. Забронируйте столик онлайн и наслаждайтесь вечером без забот.</p>
+                <br>
+                <p><strong>Как это работает:</strong></p>
+                <ol style="padding-left: 20px; margin-top: 10px;">
+                    <li>Зарегистрируйтесь в системе</li>
+                    <li>Забронируйте столик на нужную дату и время</li>
+                    <li>Администратор подтвердит ваше бронирование</li>
+                    <li>Наслаждайтесь вечером в нашем ресторане!</li>
+                </ol>
+                <br>
+                <div class="form-row">
+                    <button id="home-register-btn" class="btn btn-primary">Зарегистрироваться</button>
+                    <button id="home-login-btn" class="btn btn-outline">Войти в систему</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Страница регистрации -->
+        <section id="register-page" class="page">
+            <h2 class="page-title">Регистрация в системе</h2>
+            <div class="form-container">
+                <form id="register-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first-name">Имя</label>
+                            <input type="text" id="first-name" class="form-control" placeholder="Иван">
+                            <div class="error-message" id="first-name-error">Имя должно содержать только кириллицу</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last-name">Фамилия</label>
+                            <input type="text" id="last-name" class="form-control" placeholder="Иванов">
+                            <div class="error-message" id="last-name-error">Фамилия должна содержать только кириллицу</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Телефон</label>
+                            <input type="tel" id="phone" class="form-control" placeholder="+7(999)-999-99-99">
+                            <div class="error-message" id="phone-error">Введите телефон в формате +7(XXX)-XXX-XX-XX</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="example@mail.ru">
+                            <div class="error-message" id="email-error">Введите корректный email</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="login">Логин</label>
+                            <input type="text" id="login" class="form-control" placeholder="Не менее 6 символов">
+                            <div class="error-message" id="login-error">Логин должен содержать только кириллицу и быть не менее 6 символов</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Пароль</label>
+                            <input type="password" id="password" class="form-control" placeholder="Не менее 6 символов">
+                            <div class="error-message" id="password-error">Пароль должен быть не менее 6 символов</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password">Подтвердите пароль</label>
+                            <input type="password" id="confirm-password" class="form-control">
+                            <div class="error-message" id="confirm-password-error">Пароли не совпадают</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Страница входа -->
+        <section id="login-page" class="page">
+            <h2 class="page-title">Вход в систему</h2>
+            <div class="form-container">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Логин</label>
+                        <input type="text" id="login-username" class="form-control" placeholder="Введите ваш логин">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Пароль</label>
+                        <input type="password" id="login-password" class="form-control" placeholder="Введите ваш пароль">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Страница бронирований пользователя -->
+        <section id="bookings-page" class="page">
+            <h2 class="page-title">Мои бронирования</h2>
+            
+            <div class="bookings-grid" id="bookings-container">
+                <!-- Бронирования будут загружены через JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Страница создания бронирования -->
+        <section id="new-booking-page" class="page">
+            <h2 class="page-title">Бронирование столика</h2>
+            <div class="form-container">
+                <form id="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="booking-date">Дата бронирования</label>
+                            <input type="date" id="booking-date" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="booking-time">Время бронирования</label>
+                            <input type="time" id="booking-time" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guests">Количество гостей</label>
+                            <select id="guests" class="form-control">
+                                <option value="1">1 человек</option>
+                                <option value="2">2 человека</option>
+                                <option value="3">3 человека</option>
+                                <option value="4">4 человека</option>
+                                <option value="5">5 человек</option>
+                                <option value="6">6 человек</option>
+                                <option value="7">7 человек</option>
+                                <option value="8">8 человек</option>
+                                <option value="9">9 человек</option>
+                                <option value="10">10 человек</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-phone">Контактный телефон</label>
+                            <input type="tel" id="contact-phone" class="form-control" placeholder="+7(999)-999-99-99">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Забронировать столик</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Админ-панель -->
+        <section id="admin-page" class="page">
+            <h2 class="page-title">Панель администратора</h2>
+            
+            <div class="admin-panel">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Фамилия</th>
+                            <th>Дата/Время</th>
+                            <th>Гости</th>
+                            <th>Телефон</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-bookings">
+                        <!-- Бронирования для администратора будут загружены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>О ресторане</h3>
+                    <p>"Я буду кушац" - ресторан изысканной кухни с уютной атмосферой. Мы предлагаем блюда европейской и авторской кухни, приготовленные с любовью.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Часы работы</h3>
+                    <ul class="footer-links">
+                        <li>Понедельник-четверг: 12:00 - 23:00</li>
+                        <li>Пятница-суббота: 12:00 - 00:00</li>
+                        <li>Воскресенье: 12:00 - 22:00</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> г. Москва, ул. Гастрономическая, д. 15</li>
+                        <li><i class="fas fa-phone"></i> +7 (495) 123-45-67</li>
+                        <li><i class="fas fa-envelope"></i> info@yabudukushac.ru</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 Ресторан "Я буду кушац". Все права защищены.
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Эмуляция базы данных с использованием localStorage
+        class Database {
+            constructor() {
+                this.usersKey = 'restaurant_users';
+                this.bookingsKey = 'restaurant_bookings';
+                this.reviewsKey = 'restaurant_reviews';
+                this.currentUserKey = 'restaurant_current_user';
+                this.adminUser = {
+                    id: 0,
+                    login: 'admin',
+                    password: 'restaurant',
+                    firstName: 'Администратор',
+                    lastName: 'Системы',
+                    phone: '+7(999)-999-99-99',
+                    email: 'admin@yabudukushac.ru',
+                    isAdmin: true
+                };
+                
+                this.initialize();
+            }
+            
+            initialize() {
+                if (!localStorage.getItem(this.usersKey)) {
+                    const users = [this.adminUser];
+                    localStorage.setItem(this.usersKey, JSON.stringify(users));
+                }
+                
+                if (!localStorage.getItem(this.bookingsKey)) {
+                    localStorage.setItem(this.bookingsKey, JSON.stringify([]));
+                }
+                
+                if (!localStorage.getItem(this.reviewsKey)) {
+                    localStorage.setItem(this.reviewsKey, JSON.stringify([]));
+                }
+            }
+            
+            // SQL: INSERT INTO users (login, password, first_name, last_name, phone, email) VALUES (?, ?, ?, ?, ?, ?)
+            registerUser(user) {
+                const users = this.getUsers();
+                
+                // Проверка уникальности логина
+                if (users.some(u => u.login === user.login)) {
+                    throw new Error('Пользователь с таким логином уже существует');
+                }
+                
+                user.id = this.getNextId(users);
+                users.push(user);
+                localStorage.setItem(this.usersKey, JSON.stringify(users));
+                return user;
+            }
+            
+            // SQL: SELECT * FROM users WHERE login = ? AND password = ?
+            loginUser(login, password) {
+                const users = this.getUsers();
+                const user = users.find(u => u.login === login && u.password === password);
+                
+                if (!user) {
+                    throw new Error('Неверный логин или пароль');
+                }
+                
+                localStorage.setItem(this.currentUserKey, JSON.stringify(user));
+                return user;
+            }
+            
+            logoutUser() {
+                localStorage.removeItem(this.currentUserKey);
+            }
+            
+            getCurrentUser() {
+                const user = localStorage.getItem(this.currentUserKey);
+                return user ? JSON.parse(user) : null;
+            }
+            
+            // SQL: INSERT INTO bookings (userId, bookingDate, bookingTime, guests, contactPhone, status) 
+            // VALUES (?, ?, ?, ?, ?, 'new')
+            createBooking(booking) {
+                const bookings = this.getBookings();
+                booking.id = this.getNextId(bookings);
+                booking.status = 'new';
+                booking.createdAt = new Date().toISOString();
+                
+                bookings.push(booking);
+                localStorage.setItem(this.bookingsKey, JSON.stringify(bookings));
+                return booking;
+            }
+            
+            // SQL: SELECT * FROM bookings WHERE userId = ?
+            getUserBookings(userId) {
+                const bookings = this.getBookings();
+                return bookings.filter(booking => booking.userId === userId);
+            }
+            
+            // SQL: SELECT * FROM bookings
+            getAllBookings() {
+                return this.getBookings();
+            }
+            
+            // SQL: UPDATE bookings SET status = ? WHERE id = ?
+            updateBookingStatus(id, status) {
+                const bookings = this.getBookings();
+                const booking = bookings.find(b => b.id === id);
+                
+                if (booking) {
+                    booking.status = status;
+                    localStorage.setItem(this.bookingsKey, JSON.stringify(bookings));
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            // SQL: INSERT INTO reviews (userId, bookingId, rating, comment) VALUES (?, ?, ?, ?)
+            createReview(review) {
+                const reviews = this.getReviews();
+                review.id = this.getNextId(reviews);
+                review.createdAt = new Date().toISOString();
+                
+                reviews.push(review);
+                localStorage.setItem(this.reviewsKey, JSON.stringify(reviews));
+                return review;
+            }
+            
+            getUsers() {
+                return JSON.parse(localStorage.getItem(this.usersKey)) || [];
+            }
+            
+            getBookings() {
+                return JSON.parse(localStorage.getItem(this.bookingsKey)) || [];
+            }
+            
+            getReviews() {
+                return JSON.parse(localStorage.getItem(this.reviewsKey)) || [];
+            }
+            
+            getNextId(items) {
+                return items.length > 0 ? Math.max(...items.map(i => i.id)) + 1 : 1;
+            }
+        }
+
+        // Основной класс приложения
+        class RestaurantApp {
+            constructor() {
+                this.db = new Database();
+                this.currentUser = null;
+                this.init();
+            }
+            
+            init() {
+                this.checkAuth();
+                this.setupEventListeners();
+                this.showPage('home');
+            }
+            
+            checkAuth() {
+                this.currentUser = this.db.getCurrentUser();
+                this.updateUI();
+            }
+            
+            updateUI() {
+                const isAuthenticated = !!this.currentUser;
+                const isAdmin = isAuthenticated && this.currentUser.isAdmin;
+                
+                // Обновление видимости кнопок
+                document.getElementById('login-btn').style.display = isAuthenticated ? 'none' : 'block';
+                document.getElementById('register-btn').style.display = isAuthenticated ? 'none' : 'block';
+                document.getElementById('logout-btn').style.display = isAuthenticated ? 'block' : 'none';
+                
+                // Обновление видимости элементов навигации
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    const page = link.getAttribute('data-page');
+                    if (page === 'admin') {
+                        link.style.display = isAdmin ? 'block' : 'none';
+                    } else if (page !== 'home') {
+                        link.style.display = isAuthenticated ? 'block' : 'none';
+                    }
+                });
+                
+                // Обновление имени пользователя
+                if (isAuthenticated) {
+                    document.querySelector('.logo h1').innerHTML = `<span>Я буду</span> кушац <small>(${this.currentUser.login})</small>`;
+                } else {
+                    document.querySelector('.logo h1').innerHTML = `<span>Я буду</span> кушац`;
+                }
+            }
+            
+            setupEventListeners() {
+                // Навигация
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = link.getAttribute('data-page');
+                        this.showPage(page);
+                    });
+                });
+                
+                // Кнопки авторизации
+                document.getElementById('login-btn').addEventListener('click', () => this.showPage('login'));
+                document.getElementById('register-btn').addEventListener('click', () => this.showPage('register'));
+                document.getElementById('logout-btn').addEventListener('click', () => this.logout());
+                document.getElementById('home-login-btn').addEventListener('click', () => this.showPage('login'));
+                document.getElementById('home-register-btn').addEventListener('click', () => this.showPage('register'));
+                document.getElementById('hero-booking-btn').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.showPage('new-booking');
+                    } else {
+                        this.showPage('register');
+                    }
+                });
+                
+                // Форма регистрации
+                document.getElementById('register-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.register();
+                });
+                
+                // Форма входа
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.login();
+                });
+                
+                // Форма бронирования
+                document.getElementById('booking-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createBooking();
+                });
+            }
+            
+            showPage(pageName) {
+                // Скрыть все страницы
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Показать запрошенную страницу
+                document.getElementById(`${pageName}-page`).classList.add('active');
+                
+                // Обновить активную ссылку в навигации
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                document.querySelector(`.nav-link[data-page="${pageName}"]`)?.classList.add('active');
+                
+                // Загрузить данные для некоторых страниц
+                if (pageName === 'bookings' && this.currentUser) {
+                    this.loadUserBookings();
+                }
+                
+                if (pageName === 'admin' && this.currentUser?.isAdmin) {
+                    this.loadAdminBookings();
+                }
+            }
+            
+            validateForm() {
+                let isValid = true;
+                
+                // Имя: кириллица
+                const firstName = document.getElementById('first-name').value;
+                const firstNameRegex = /^[А-Яа-яЁё]+$/;
+                if (!firstNameRegex.test(firstName)) {
+                    document.getElementById('first-name-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('first-name-error').style.display = 'none';
+                }
+                
+                // Фамилия: кириллица
+                const lastName = document.getElementById('last-name').value;
+                const lastNameRegex = /^[А-Яа-яЁё]+$/;
+                if (!lastNameRegex.test(lastName)) {
+                    document.getElementById('last-name-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('last-name-error').style.display = 'none';
+                }
+                
+                // Телефон: +7(XXX)-XXX-XX-XX
+                const phone = document.getElementById('phone').value;
+                const phoneRegex = /^\+7\(\d{3}\)-\d{3}-\d{2}-\d{2}$/;
+                if (!phoneRegex.test(phone)) {
+                    document.getElementById('phone-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('phone-error').style.display = 'none';
+                }
+                
+                // Email: стандартный формат
+                const email = document.getElementById('email').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    document.getElementById('email-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('email-error').style.display = 'none';
+                }
+                
+                // Логин: кириллица, минимум 6 символов
+                const login = document.getElementById('login').value;
+                const loginRegex = /^[А-Яа-яЁё]{6,}$/;
+                if (!loginRegex.test(login)) {
+                    document.getElementById('login-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('login-error').style.display = 'none';
+                }
+                
+                // Пароль: минимум 6 символов
+                const password = document.getElementById('password').value;
+                if (password.length < 6) {
+                    document.getElementById('password-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('password-error').style.display = 'none';
+                }
+                
+                // Подтверждение пароля
+                const confirmPassword = document.getElementById('confirm-password').value;
+                if (password !== confirmPassword) {
+                    document.getElementById('confirm-password-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('confirm-password-error').style.display = 'none';
+                }
+                
+                return isValid;
+            }
+            
+            register() {
+                if (!this.validateForm()) return;
+                
+                const user = {
+                    login: document.getElementById('login').value,
+                    password: document.getElementById('password').value,
+                    firstName: document.getElementById('first-name').value,
+                    lastName: document.getElementById('last-name').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    isAdmin: false
+                };
+                
+                try {
+                    const newUser = this.db.registerUser(user);
+                    this.db.loginUser(newUser.login, newUser.password);
+                    this.currentUser = newUser;
+                    this.updateUI();
+                    this.showPage('new-booking');
+                    alert('Регистрация прошла успешно! Теперь вы можете забронировать столик.');
+                } catch (error) {
+                    alert(`Ошибка регистрации: ${error.message}`);
+                }
+            }
+            
+            login() {
+                const login = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+                
+                try {
+                    const user = this.db.loginUser(login, password);
+                    this.currentUser = user;
+                    this.updateUI();
+                    this.showPage('bookings');
+                } catch (error) {
+                    alert(`Ошибка входа: ${error.message}`);
+                }
+            }
+            
+            logout() {
+                this.db.logoutUser();
+                this.currentUser = null;
+                this.updateUI();
+                this.showPage('home');
+            }
+            
+            createBooking() {
+                if (!this.currentUser) {
+                    alert('Для бронирования столика необходимо войти в систему');
+                    this.showPage('login');
+                    return;
+                }
+                
+                const booking = {
+                    userId: this.currentUser.id,
+                    bookingDate: document.getElementById('booking-date').value,
+                    bookingTime: document.getElementById('booking-time').value,
+                    guests: document.getElementById('guests').value,
+                    contactPhone: document.getElementById('contact-phone').value
+                };
+                
+                try {
+                    this.db.createBooking(booking);
+                    document.getElementById('booking-form').reset();
+                    this.showPage('bookings');
+                    alert('Бронирование успешно создано и отправлено на рассмотрение администратору!');
+                } catch (error) {
+                    alert(`Ошибка создания бронирования: ${error.message}`);
+                }
+            }
+            
+            loadUserBookings() {
+                const container = document.getElementById('bookings-container');
+                container.innerHTML = '';
+                
+                if (!this.currentUser) return;
+                
+                const bookings = this.db.getUserBookings(this.currentUser.id);
+                
+                if (bookings.length === 0) {
+                    container.innerHTML = '<div class="form-container"><p>У вас пока нет бронирований.</p></div>';
+                    return;
+                }
+                
+                bookings.forEach(booking => {
+                    const date = new Date(booking.createdAt);
+                    const formattedDate = date.toLocaleDateString('ru-RU');
+                    const formattedTime = date.toLocaleTimeString('ru-RU');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'booking-card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h3>Бронирование #${booking.id}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-row">
+                                <span class="card-label">Дата создания:</span>
+                                <span class="card-value">${formattedDate} ${formattedTime}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Статус:</span>
+                                <span class="card-value">
+                                    <span class="status status-${booking.status}">${
+                                        booking.status === 'new' ? 'Новое' : 
+                                        booking.status === 'completed' ? 'Посещение состоялось' : 'Отменено'
+                                    }</span>
+                                </span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Дата бронирования:</span>
+                                <span class="card-value">${booking.bookingDate}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Время:</span>
+                                <span class="card-value">${booking.bookingTime}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Количество гостей:</span>
+                                <span class="card-value">${booking.guests}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Контактный телефон:</span>
+                                <span class="card-value">${booking.contactPhone}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+            
+            loadAdminBookings() {
+                const container = document.getElementById('admin-bookings');
+                container.innerHTML = '';
+                
+                const bookings = this.db.getAllBookings();
+                const users = this.db.getUsers();
+                
+                if (bookings.length === 0) {
+                    container.innerHTML = '<tr><td colspan="8" style="text-align: center;">Нет бронирований</td></tr>';
+                    return;
+                }
+                
+                bookings.forEach(booking => {
+                    const user = users.find(u => u.id === booking.userId) || {};
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${booking.id}</td>
+                        <td>${user.firstName || 'Неизвестно'}</td>
+                        <td>${user.lastName || 'Неизвестно'}</td>
+                        <td>${booking.bookingDate} ${booking.bookingTime}</td>
+                        <td>${booking.guests}</td>
+                        <td>${booking.contactPhone}</td>
+                        <td><span class="status status-${booking.status}">${
+                            booking.status === 'new' ? 'Новое' : 
+                            booking.status === 'completed' ? 'Посещение состоялось' : 'Отменено'
+                        }</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-success btn-sm complete-booking" data-id="${booking.id}">Посещение</button>
+                            <button class="btn btn-danger btn-sm cancel-booking" data-id="${booking.id}">Отмена</button>
+                        </td>
+                    `;
+                    
+                    container.appendChild(row);
+                });
+                
+                // Обработчики для кнопок изменения статуса
+                document.querySelectorAll('.complete-booking').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        if (confirm('Подтвердить посещение ресторана?')) {
+                            this.db.updateBookingStatus(id, 'completed');
+                            this.loadAdminBookings();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.cancel-booking').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        if (confirm('Вы уверены, что хотите отменить это бронирование?')) {
+                            this.db.updateBookingStatus(id, 'cancelled');
+                            this.loadAdminBookings();
+                        }
+                    });
+                });
+            }
+        }
+
+        // Инициализация приложения после загрузки страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new RestaurantApp();
+        });
+    </script>
+</body>
+</html>
