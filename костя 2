@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Я буду кушац - Бронирование столиков</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e76f51;
+            --secondary: #f4a261;
+            --accent: #2a9d8f;
+            --dark: #264653;
+            --light: #e9c46a;
+            --light-bg: #f8f9fa;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --text: #333;
+            --text-light: #777;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 60px;
+            background-image: radial-gradient(circle at 10% 20%, rgba(233, 196, 106, 0.1) 0%, rgba(248, 249, 250, 0.1) 90%);
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark), var(--accent));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--light);
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: white;
+            padding: 0.8rem;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 72px;
+            z-index: 99;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--dark);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-btn:hover, 
+        .nav-btn.active {
+            color: var(--accent);
+        }
+        
+        .nav-btn:hover::after,
+        .nav-btn.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            border-left: 4px solid var(--accent);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            position: relative;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent), var(--light));
+            border-radius: 2px;
+        }
+        
+        .card-title i {
+            color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 42px;
+            color: var(--text-light);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #fafafa;
+        }
+        
+        select {
+            padding: 12px 15px;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
+            background-color: white;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--accent), var(--dark));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, var(--dark), var(--accent));
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #2e7d32);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ef6c00);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c62828);
+        }
+        
+        .error {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-top: 4px solid var(--accent);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            background: white;
+            margin: 2rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: var(--dark);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: rgba(233, 196, 106, 0.1);
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-new {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: var(--warning);
+        }
+        
+        .status-confirmed {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+        
+        .status-cancelled {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: var(--danger);
+        }
+        
+        .booking-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+        }
+        
+        .booking-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .booking-date {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .review-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #eee;
+        }
+        
+        .review-textarea {
+            min-height: 120px;
+            margin-bottom: 1rem;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            width: 100%;
+            resize: vertical;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: var(--dark);
+            color: white;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background: var(--success);
+        }
+        
+        .toast.error {
+            background: var(--danger);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .nav-btn {
+                padding: 6px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="logo-text">Я буду кушац</div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">ИП</div>
+                <div>Иван Петров</div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <button class="nav-btn active" data-section="home">
+            <i class="fas fa-home"></i> Главная
+        </button>
+        <button class="nav-btn" data-section="register">
+            <i class="fas fa-user-plus"></i> Регистрация
+        </button>
+        <button class="nav-btn" data-section="login">
+            <i class="fas fa-sign-in-alt"></i> Вход
+        </button>
+        <button class="nav-btn" data-section="booking">
+            <i class="fas fa-calendar-check"></i> Забронировать
+        </button>
+        <button class="nav-btn" data-section="my-bookings">
+            <i class="fas fa-list"></i> Мои бронирования
+        </button>
+        <button class="nav-btn" data-section="admin">
+            <i class="fas fa-user-cog"></i> Админ-панель
+        </button>
+    </nav>
+    
+    <div class="container">
+        <!-- Главная страница -->
+        <section id="home" class="section active">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-utensils"></i> Добро пожаловать в "Я буду кушац"!
+                </h2>
+                <p>Мы рады приветствовать вас в нашем ресторане. Забронируйте столик онлайн и насладитесь изысканной кухней в уютной атмосфере.</p>
+                
+                <div class="grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3>Бронируйте онлайн</h3>
+                        <p>Выберите удобное время и количество гостей всего за пару кликов</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3>Оставляйте отзывы</h3>
+                        <p>Поделитесь впечатлениями после посещения и помогите нам стать лучше</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3>VIP-обслуживание</h3>
+                        <p>Специальные условия и бонусы для наших постоянных гостей</p>
+                    </div>
+                </div>
+                
+                <button class="btn" data-section="booking">
+                    <i class="fas fa-bookmark"></i> Забронировать столик
+                </button>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-concierge-bell"></i> Наше меню
+                </h2>
+                <div class="grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-drumstick-bite"></i>
+                        </div>
+                        <h3>Мясные блюда</h3>
+                        <p>Стейки, ребра, медальоны и другие мясные деликатесы</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <h3>Морепродукты</h3>
+                        <p>Свежие устрицы, креветки, лосось и другие дары моря</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-ice-cream"></i>
+                        </div>
+                        <h3>Десерты</h3>
+                        <p>Тирамису, чизкейки, эклеры и другие сладкие искушения</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Регистрация -->
+        <section id="register" class="section">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="first-name">Имя</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <input type="text" id="first-name" required placeholder="Введите ваше имя">
+                        <div class="error" id="first-name-error">Пожалуйста, введите ваше имя</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="last-name">Фамилия</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <input type="text" id="last-name" required placeholder="Введите вашу фамилию">
+                        <div class="error" id="last-name-error">Пожалуйста, введите вашу фамилию</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Номер телефона</label>
+                        <div class="input-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <input type="tel" id="phone" placeholder="+7(XXX)-XXX-XX-XX" required>
+                        <div class="error" id="phone-error">Пожалуйста, введите корректный номер телефона</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <input type="email" id="email" required placeholder="example@mail.com">
+                        <div class="error" id="email-error">Пожалуйста, введите корректный email</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login">Логин (кириллица, не менее 6 символов)</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <input type="text" id="login" required placeholder="Придумайте логин">
+                        <div class="error" id="login-error">Логин должен содержать только кириллицу и быть не менее 6 символов</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Пароль (минимум 6 символов)</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <input type="password" id="password" required placeholder="Придумайте пароль">
+                        <div class="error" id="password-error">Пароль должен содержать не менее 6 символов</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password">Подтвердите пароль</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <input type="password" id="confirm-password" required placeholder="Повторите пароль">
+                        <div class="error" id="confirm-password-error">Пароли не совпадают</div>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-user-check"></i> Зарегистрироваться
+                    </button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Вход -->
+        <section id="login" class="section">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-sign-in-alt"></i> Вход в систему
+                </h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Логин</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <input type="text" id="login-username" required placeholder="Введите ваш логин">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Пароль</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <input type="password" id="login-password" required placeholder="Введите ваш пароль">
+                    </div>
+                    
+                    <div id="login-error" class="error" style="margin-bottom: 1rem;"></div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </button>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p>Еще не зарегистрированы? <a href="#" style="color: var(--accent); font-weight: 600;" data-section="register">Создать аккаунт</a></p>
+                    </div>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Бронирование столика -->
+        <section id="booking" class="section">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-calendar-check"></i> Бронирование столика
+                </h2>
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label for="booking-date">Дата и время</label>
+                        <div class="input-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <input type="datetime-local" id="booking-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="guests">Количество гостей</label>
+                        <div class="input-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <select id="guests" required>
+                            <option value="">Выберите количество</option>
+                            <option value="1">1 гость</option>
+                            <option value="2">2 гостя</option>
+                            <option value="3">3 гостя</option>
+                            <option value="4">4 гостя</option>
+                            <option value="5">5 гостей</option>
+                            <option value="6">6 гостей</option>
+                            <option value="7">7 гостей</option>
+                            <option value="8">8 гостей</option>
+                            <option value="9">9 гостей</option>
+                            <option value="10">10 гостей</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact-phone">Контактный телефон</label>
+                        <div class="input-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <input type="tel" id="contact-phone" placeholder="+7(XXX)-XXX-XX-XX" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="special-requests">Особые пожелания</label>
+                        <div class="input-icon">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                        <textarea id="special-requests" rows="3" placeholder="Укажите особые пожелания (аллергии, детские стульчики и т.д.)"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-bookmark"></i> Забронировать
+                    </button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Мои бронирования -->
+        <section id="my-bookings" class="section">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-list"></i> Мои бронирования
+                </h2>
+                
+                <div id="bookings-list">
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div class="booking-date">
+                                <i class="fas fa-calendar-alt"></i> 15 июня 2025, 19:00
+                            </div>
+                            <span class="status-badge status-confirmed">Подтверждено</span>
+                        </div>
+                        
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-users"></i> Количество гостей</span>
+                                <span class="detail-value">4</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-phone"></i> Телефон</span>
+                                <span class="detail-value">+7(912)-345-67-89</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-info-circle"></i> Статус</span>
+                                <span class="detail-value">Подтверждено администратором</span>
+                            </div>
+                        </div>
+                        
+                        <div class="review-section">
+                            <h3><i class="fas fa-star"></i> Оставить отзыв</h3>
+                            <textarea class="review-textarea" placeholder="Расскажите о вашем опыте посещения..."></textarea>
+                            <button class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> Отправить отзыв
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div class="booking-date">
+                                <i class="fas fa-calendar-alt"></i> 20 июня 2025, 20:30
+                            </div>
+                            <span class="status-badge status-new">Новое</span>
+                        </div>
+                        
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-users"></i> Количество гостей</span>
+                                <span class="detail-value">2</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-phone"></i> Телефон</span>
+                                <span class="detail-value">+7(987)-654-32-10</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-info-circle"></i> Статус</span>
+                                <span class="detail-value">Ожидает подтверждения</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div class="booking-date">
+                                <i class="fas fa-calendar-alt"></i> 5 июля 2025, 18:00
+                            </div>
+                            <span class="status-badge status-cancelled">Отменено</span>
+                        </div>
+                        
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-users"></i> Количество гостей</span>
+                                <span class="detail-value">6</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-phone"></i> Телефон</span>
+                                <span class="detail-value">+7(999)-123-45-67</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-info-circle"></i> Статус</span>
+                                <span class="detail-value">Отменено пользователем</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Админ-панель -->
+        <section id="admin" class="section">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-user-cog"></i> Панель администратора
+                </h2>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Клиент</th>
+                                <th>Дата и время</th>
+                                <th>Гостей</th>
+                                <th>Телефон</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#1025</td>
+                                <td>Иван Петров</td>
+                                <td>15.06.2025 19:00</td>
+                                <td>4</td>
+                                <td>+7(912)-345-67-89</td>
+                                <td>
+                                    <select class="status-select">
+                                        <option value="new">Новое</option>
+                                        <option value="confirmed" selected>Посещение состоялось</option>
+                                        <option value="cancelled">Отменено</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success">
+                                        <i class="fas fa-save"></i> Сохранить
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#1026</td>
+                                <td>Мария Сидорова</td>
+                                <td>17.06.2025 18:30</td>
+                                <td>2</td>
+                                <td>+7(987)-123-45-67</td>
+                                <td>
+                                    <select class="status-select">
+                                        <option value="new" selected>Новое</option>
+                                        <option value="confirmed">Посещение состоялось</option>
+                                        <option value="cancelled">Отменено</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success">
+                                        <i class="fas fa-save"></i> Сохранить
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#1027</td>
+                                <td>Алексей Иванов</td>
+                                <td>18.06.2025 20:00</td>
+                                <td>6</td>
+                                <td>+7(999)-888-77-66</td>
+                                <td>
+                                    <select class="status-select">
+                                        <option value="new">Новое</option>
+                                        <option value="confirmed">Посещение состоялось</option>
+                                        <option value="cancelled" selected>Отменено</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success">
+                                        <i class="fas fa-save"></i> Сохранить
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#1028</td>
+                                <td>Елена Кузнецова</td>
+                                <td>20.06.2025 20:30</td>
+                                <td>2</td>
+                                <td>+7(987)-654-32-10</td>
+                                <td>
+                                    <select class="status-select">
+                                        <option value="new" selected>Новое</option>
+                                        <option value="confirmed">Посещение состоялось</option>
+                                        <option value="cancelled">Отменено</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success">
+                                        <i class="fas fa-save"></i> Сохранить
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                    <button class="btn btn-danger">
+                        <i class="fas fa-file-export"></i> Экспорт данных
+                    </button>
+                    <button class="btn">
+                        <i class="fas fa-sync-alt"></i> Обновить список
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div class="footer">
+        © 2025 "Я буду кушац" - Система бронирования ресторана. Все права защищены.
+    </div>
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Успешное выполнение!</span>
+    </div>
+    
+    <script>
+        // Навигация по разделам
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Удаляем активный класс у всех кнопок
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Добавляем активный класс текущей кнопке
+                button.classList.add('active');
+                
+                // Скрываем все разделы
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Показываем выбранный раздел
+                const sectionId = button.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Прокрутка вверх
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        // Обработка ссылок внутри приложения
+        document.querySelectorAll('a[data-section]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.getAttribute('data-section');
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-section') === section) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                document.getElementById(section).classList.add('active');
+            });
+        });
+        
+        // Валидация формы регистрации
+        const registerForm = document.getElementById('register-form');
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let valid = true;
+            
+            // Проверка имени
+            const firstName = document.getElementById('first-name');
+            if (!firstName.value.trim()) {
+                document.getElementById('first-name-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('first-name-error').style.display = 'none';
+            }
+            
+            // Проверка фамилии
+            const lastName = document.getElementById('last-name');
+            if (!lastName.value.trim()) {
+                document.getElementById('last-name-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('last-name-error').style.display = 'none';
+            }
+            
+            // Проверка телефона
+            const phone = document.getElementById('phone');
+            const phoneRegex = /^\+7\(\d{3}\)-\d{3}-\d{2}-\d{2}$/;
+            if (!phoneRegex.test(phone.value)) {
+                document.getElementById('phone-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('phone-error').style.display = 'none';
+            }
+            
+            // Проверка email
+            const email = document.getElementById('email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                document.getElementById('email-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('email-error').style.display = 'none';
+            }
+            
+            // Проверка логина
+            const login = document.getElementById('login');
+            const loginRegex = /^[а-яА-ЯёЁ]{6,}$/;
+            if (!loginRegex.test(login.value)) {
+                document.getElementById('login-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('login-error').style.display = 'none';
+            }
+            
+            // Проверка пароля
+            const password = document.getElementById('password');
+            if (password.value.length < 6) {
+                document.getElementById('password-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('password-error').style.display = 'none';
+            }
+            
+            // Проверка подтверждения пароля
+            const confirmPassword = document.getElementById('confirm-password');
+            if (password.value !== confirmPassword.value) {
+                document.getElementById('confirm-password-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('confirm-password-error').style.display = 'none';
+            }
+            
+            if (valid) {
+                // В реальном приложении здесь будет AJAX-запрос к серверу
+                showToast('Регистрация прошла успешно! Теперь вы можете войти в систему.', 'success');
+                
+                // Имитация задержки для демонстрации
+                setTimeout(() => {
+                    document.querySelector('.nav-btn[data-section="login"]').click();
+                }, 2000);
+            }
+        });
+        
+        // Авторизация
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            // Проверка администратора
+            if (username === 'admin' && password === 'restaurant') {
+                showToast('Добро пожаловать, администратор!', 'success');
+                setTimeout(() => {
+                    document.querySelector('.nav-btn[data-section="admin"]').click();
+                }, 1500);
+                return;
+            }
+            
+            // Проверка обычного пользователя
+            if (username && password) {
+                // В реальном приложении здесь будет AJAX-запрос к серверу
+                showToast('Вход выполнен успешно!', 'success');
+                setTimeout(() => {
+                    document.querySelector('.nav-btn[data-section="my-bookings"]').click();
+                }, 1500);
+            } else {
+                errorElement.textContent = 'Неправильный логин или пароль';
+            }
+        });
+        
+        // Бронирование столика
+        const bookingForm = document.getElementById('booking-form');
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const date = document.getElementById('booking-date').value;
+            const guests = document.getElementById('guests').value;
+            const phone = document.getElementById('contact-phone').value;
+            
+            if (date && guests && phone) {
+                // В реальном приложении здесь будет AJAX-запрос к серверу
+                showToast('Ваша заявка на бронирование отправлена на рассмотрение администратору!', 'success');
+                bookingForm.reset();
+            }
+        });
+        
+        // Маска для телефона
+        const phoneInputs = document.querySelectorAll('input[type="tel"]');
+        phoneInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                e.target.value = !x[2] ? x[1] : '+7(' + x[2] + (x[3] ? ')-' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+            });
+        });
+        
+        // Функция показа уведомлений
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Инициализация календаря бронирования
+        const today = new Date();
+        const minDate = new Date(today);
+        minDate.setDate(today.getDate() + 1);
+        
+        const maxDate = new Date(today);
+        maxDate.setMonth(today.getMonth() + 3);
+        
+        const dateInput = document.getElementById('booking-date');
+        dateInput.min = formatDate(minDate);
+        dateInput.max = formatDate(maxDate);
+        
+        // Установка минимального времени (текущее время + 1 час)
+        const now = new Date();
+        now.setHours(now.getHours() + 1);
+        dateInput.value = formatDateTime(now);
+        
+        // Функции для форматирования даты
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        function formatDateTime(date) {
+            return date.toISOString().slice(0, 16);
+        }
+    </script>
+</body>
+</html>
